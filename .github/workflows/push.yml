@@ -13,5 +13,13 @@ jobs:
               with:
                   java-version: '11'
                   distribution: 'adopt'
-            - name: Build with Maven
-              run: mvn --batch-mode --update-snapshots verify
+              # Cache Gradle dependencies
+            - name: Setup Gradle Dependencies Cache
+              uses: actions/cache@v2
+              with:
+                path: ~/.gradle/caches
+                key: ${{ runner.os }}-gradle-caches-${{ hashFiles('**/*.gradle', '**/*.gradle.kts') }}
+            - name: Validate Gradle wrapper
+              uses: gradle/wrapper-validation-action@e6e38bacfdf1a337459f332974bb2327a31aaf4b
+            - name: Build with Gradle
+              run: ./gradlew build

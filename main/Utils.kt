@@ -1,7 +1,6 @@
 package me.reckter.aoc
 
 import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.channels.sendBlocking
 import kotlinx.coroutines.channels.trySendBlocking
 import java.io.File
 import java.math.BigInteger
@@ -12,7 +11,6 @@ import kotlin.math.abs
 import kotlin.math.sqrt
 import kotlin.reflect.full.createInstance
 import kotlin.system.measureNanoTime
-import kotlin.test.assertTrue
 
 object Context {
     var day: Int = 0
@@ -36,9 +34,9 @@ fun checkSolution(solution: Int, value: String) {
     }
 
     val savedValue = File("solutions/${Context.day}_$solution.txt").readText()
-    assertTrue("day ${Context.day} failed for solution $solution! \nwas: \n$savedValue\n\nnow:\n$value") {
+    assert(
         value == savedValue
-    }
+    ) { "day ${Context.day} failed for solution $solution! \nwas: \n$savedValue\n\nnow:\n$value" }
 }
 
 fun Long.logTime(solution: String) {

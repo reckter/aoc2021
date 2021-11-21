@@ -11,7 +11,6 @@ class AllCombinationsTest {
 
         val combis = start.allPairings()
             .toList()
-
         assertTrue {
             combis == listOf(
                 1 to 2,
