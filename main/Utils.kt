@@ -2,6 +2,7 @@ package me.reckter.aoc
 
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.sendBlocking
+import kotlinx.coroutines.channels.trySendBlocking
 import java.io.File
 import java.math.BigInteger
 import java.math.RoundingMode
@@ -160,12 +161,12 @@ fun <E> List<E>.allPairings(
     return this
         .asSequence()
         .mapIndexed { index, it ->
-            val other = if (bothDirections)
+            val others = if (bothDirections)
                 this
             else
                 this.subList(index, this.size)
 
-            other.mapNotNull { other ->
+            others.mapNotNull { other ->
                 if (it != other || includeSelf)
                     it to other
                 else null
@@ -225,7 +226,7 @@ fun <E> LinkedList<E>.rotateRight(by: Int) {
 val alphabet = ('a'..'z').toList()
 val alphabetString = alphabet.joinToString("")
 
-val uppercaseAlphabet = alphabet.map(Char::toUpperCase)
+val uppercaseAlphabet = alphabet.map(Char::uppercaseChar)
 val uppercaseAlphabetString = uppercaseAlphabet.joinToString("")
 
 fun Int.digits() = this.toString().map { it.toString().toInt() }
@@ -256,7 +257,7 @@ fun <T> List<T>.commonPrefix(with: List<T>): List<T> =
 
 fun <E> channelOf(vararg values: E): Channel<E> {
     val channel = Channel<E>(values.size)
-    values.forEach { channel.sendBlocking(it) }
+    values.forEach { channel.trySendBlocking(it) }
     return channel
 }
 
@@ -295,7 +296,7 @@ fun <T> Iterable<T>.splitAt(predicate: (T) -> Boolean): Iterable<Iterable<T>> {
 }
 
 fun <T> List<T>.runsOfLength(length: Int): List<List<T>> {
-    return this.mapIndexed { index, it -> (this.drop(index) + this.takeLast(index)).take(length) }
+    return this.mapIndexed { index, _ -> (this.drop(index) + this.takeLast(index)).take(length) }
 }
 
 fun <T> List<T>.rotateRight(by: Int = 1): List<T> {
@@ -319,7 +320,7 @@ fun fastExp(aBase: Long, aExponent: Long, module: Long): Long {
         result = base
     }
 
-    while (exponent !== 0L) {
+    while (exponent != 0L) {
         exponent = exponent shr 1
         base = (base * base) % module
         if (exponent % 2 == 1L)
