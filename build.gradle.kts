@@ -26,22 +26,6 @@ sourceSets {
     getByName("main").java.srcDirs("main/")
     getByName("test").java.srcDirs("test/")
 }
-tasks {
-    test {
-        useJUnitPlatform()
-    }
-}
-// kotlin {
-//    jvm {
-//        testRuns["test"].executionTask.configure {
-//            useJUnitPlatform()
-//        }
-//    }
-//
-//    sourceSets["main"].apply {
-//
-//    }
-// }
 
 dependencies {
     implementation(kotlin("stdlib"))
@@ -60,5 +44,8 @@ version = "1.0-SNAPSHOT"
 description = "aoc2021"
 
 tasks.test {
-    useJUnitPlatform()
+    val etags = System.getProperty("excludeTags") ?: "no-tag-given"
+    useJUnitPlatform{
+        excludeTags = etags.split(",").toMutableSet()
+    }
 }
