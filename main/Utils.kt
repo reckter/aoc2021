@@ -305,6 +305,10 @@ fun <T> List<T>.rotateLeft(by: Int = 1): List<T> {
     return this.drop(by % this.size) + this.take(by % this.size)
 }
 
+fun <T> List<List<T>>.swapDimensions(): List<List<T>> {
+    return this.first().indices.map { index -> this.map { it[index] } }
+}
+
 // from https://rosettacode.org/wiki/Least_common_multiple#Kotlin
 fun gcd(a: Long, b: Long): Long = if (b == 0L) a else gcd(b, a % b)
 fun lcm(a: Long, b: Long): Long = a / gcd(a, b) * b

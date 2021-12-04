@@ -45,7 +45,7 @@ description = "aoc2021"
 
 tasks.test {
     val etags = System.getProperty("excludeTags") ?: "no-tag-given"
-    useJUnitPlatform{
+    useJUnitPlatform {
         excludeTags = etags.split(",").toMutableSet()
     }
 }
