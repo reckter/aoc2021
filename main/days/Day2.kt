@@ -30,7 +30,7 @@ class Day2 : Day {
             .fold(Cord3D(0, 0, 0)) { acc, cur ->
                 val (direction, numberStr) = cur.split(" ")
                 val number = numberStr.toInt()
-                when (direction){
+                when (direction) {
                     "up" -> acc + Cord3D(0, 0, -number)
                     "down" -> acc + Cord3D(0, 0, number)
                     "forward" -> {
