@@ -1,10 +1,10 @@
 package me.reckter.aoc.days
 
 import me.reckter.aoc.Day
+import me.reckter.aoc.rotateLeft
 import me.reckter.aoc.solution
 import me.reckter.aoc.solve
 import me.reckter.aoc.toIntegers
-import java.math.BigInteger
 
 class Day6 : Day {
     override val day = 6
@@ -15,35 +15,34 @@ class Day6 : Day {
             .split(",")
             .toIntegers()
             .groupBy { it }
-            .mapValues { it.value.size.toBigInteger() }
+            .mapValues { it.value.size.toLong() }
+            .entries
+            .fold(mutableListOf(0L,0L,0L,0L,0L,0L,0L,0L, 0L)) { acc, cur ->
+                acc[cur.key] = cur.value
+
+                acc
+            }
     }
 
-    fun calculatePopulationAtDay(population: Map<Int, BigInteger>, day: Int): Map<Int, BigInteger> {
+    private fun calculatePopulationAtDay(population: List<Long>, day: Int): List<Long> {
         return (0 until day)
-            .fold(population) { acc, cur ->
-                val reduced = acc
-                    .mapKeys { it.key - 1 }
-                val pregnant = reduced[-1]
-                if (pregnant == null)
-                    reduced
-                else
-                    reduced + listOf(
-                        (6 to pregnant + (reduced[6] ?: 0.toBigInteger())),
-                        (8 to pregnant)
-                    ) - listOf(-1)
+            .fold(population.toMutableList()) { acc, cur ->
+                val next = acc.rotateLeft(1).toMutableList()
+
+                next[6] += next[8]
+
+                next
             }
     }
     override fun solvePart1() {
         calculatePopulationAtDay(start, 80)
-            .values
-            .sumOf { it }
+            .sum()
             .solution(1)
     }
 
     override fun solvePart2() {
         calculatePopulationAtDay(start, 256)
-            .values
-            .sumOf { it }
+            .sum()
             .solution(2)
     }
 }
