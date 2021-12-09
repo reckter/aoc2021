@@ -49,13 +49,23 @@ fun Long.logTime(solution: String) {
     println("$solution took: $timeString")
 }
 
+fun Double.logTime(solution: String) {
+    val timeString = when {
+        this > 1_000_000_000 -> "${(this / 1_000_000_000.0).scale(3)}s"
+        this > 1_000_000 -> "${(this / 1_000_000.0).scale(3)}ms"
+        this > 1_000 -> "${(this / 1_000.0).scale(3)}μs"
+        else -> "${this}ns"
+    }
+    println("$solution took: $timeString")
+}
+
 private fun Double.scale(scale: Int) =
     this.toBigDecimal().setScale(scale, RoundingMode.HALF_UP).toString()
 
 fun <T : Day> solve(
     enablePartOne: Boolean = true,
     enablePartTwo: Boolean = true,
-    clazz: Class<T>
+    clazz: Class<T>,
 ) {
     val day = clazz.kotlin.createInstance()
 
@@ -72,11 +82,38 @@ fun <T : Day> solve(
     partTwoNanos?.logTime("solution 2")
 }
 
+fun <T : Day> timed(
+    clazz: Class<T>,
+) {
+    val day = clazz.kotlin.createInstance()
+
+    val times = 10_000_000
+    val warmup = 1_000_000
+    val partOneNanos = (0..times).map {
+        measureNanoTime { day.solvePart1() }
+    }.drop(warmup)
+
+    val partTwoNanos = (0..times).map {
+        measureNanoTime { day.solvePart2() }
+    }.drop(warmup)
+
+    println()
+    times.print("measurements: ")
+    partOneNanos.average().logTime("1, average")
+    partOneNanos.sorted().elementAt(times / 2).logTime("1, median")
+    partTwoNanos.average().logTime("2, average")
+    partTwoNanos.sorted().elementAt(times / 2).logTime("2, median")
+}
+
 inline fun <reified T : Day> solve(
     enablePartOne: Boolean = true,
     enablePartTwo: Boolean = true
 ) {
     solve<T>(enablePartOne, enablePartTwo, T::class.java)
+}
+
+inline fun <reified T : Day> time() {
+    timed<T>(T::class.java)
 }
 
 fun readLines(file: String): List<String> {
