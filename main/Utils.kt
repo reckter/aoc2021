@@ -87,8 +87,8 @@ fun <T : Day> timed(
 ) {
     val day = clazz.kotlin.createInstance()
 
-    val times = 10_000_000
-    val warmup = 1_000_000
+    val times = 1_0_000
+    val warmup = 1__000
     val partOneNanos = (0..times).map {
         measureNanoTime { day.solvePart1() }
     }.drop(warmup)

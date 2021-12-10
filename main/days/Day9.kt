@@ -5,6 +5,7 @@ import me.reckter.aoc.cords.d2.Cord2D
 import me.reckter.aoc.cords.d2.getNeighbors
 import me.reckter.aoc.solution
 import me.reckter.aoc.solve
+import me.reckter.aoc.time
 
 class Day9 : Day {
     override val day = 9
@@ -44,6 +45,8 @@ class Day9 : Day {
         map
             .filter { it.value != 9 }
             .forEach { (cord, height) ->
+
+            val seen = mutableListOf<Cord2D<Int>>(cord)
             var currentCord = cord
 
             while(true) {
@@ -51,12 +54,13 @@ class Day9 : Day {
                     .find { currentCord in it }
 
                 if(foundBasin != null) {
-                    foundBasin.add(cord)
+                    foundBasin.addAll(seen)
                     return@forEach
                 }
                 currentCord = currentCord.getNeighbors(true)
                     .minByOrNull { map[it] ?: 100000  }
                     ?: error("flows no where!")
+                seen.add(currentCord)
 
             }
         }
@@ -69,4 +73,4 @@ class Day9 : Day {
     }
 }
 
-fun main() = solve<Day9>()
+fun main() = time<Day9>()
