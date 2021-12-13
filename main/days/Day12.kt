@@ -50,7 +50,7 @@ class Day12 : Day {
     override fun solvePart2() {
         findAllPath(listOf(caves["start"]!!), true)
             .count()
-            .solution(1)
+            .solution(2)
     }
 }
 
