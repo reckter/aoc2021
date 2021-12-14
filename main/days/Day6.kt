@@ -1,7 +1,6 @@
 package me.reckter.aoc.days
 
 import me.reckter.aoc.Day
-import me.reckter.aoc.rotateLeft
 import me.reckter.aoc.solution
 import me.reckter.aoc.time
 import me.reckter.aoc.toIntegers

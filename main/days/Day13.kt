@@ -14,7 +14,7 @@ class Day13 : Day {
         loadInput()
             .takeWhile { it.isNotBlank() }
             .parseWithRegex("(\\d*),(\\d*)")
-            .map { (x,y) -> Cord2D(x.toInt(),y.toInt()) }
+            .map { (x, y) -> Cord2D(x.toInt(), y.toInt()) }
     }
 
     val instructions by lazy {
@@ -22,7 +22,6 @@ class Day13 : Day {
             .parseWithRegex("fold along (.)=(\\d*)")
             .map { (direction, number) -> direction to number.toInt() }
     }
-
 
     fun List<Cord2D<Int>>.oneFold(instruction: Pair<String, Int>): List<Cord2D<Int>> {
         return this.map {
@@ -39,10 +38,9 @@ class Day13 : Day {
         val map = initialPoints.oneFold(instructions.first())
             .count()
             .solution(1)
-
     }
 
-    fun printMap(map: List<Cord2D<Int>>):String {
+    fun printMap(map: List<Cord2D<Int>>): String {
         val minX = map.minByOrNull { it.x }!!.x
         val maxX = map.maxByOrNull { it.x }!!.x
         val minY = map.minByOrNull { it.y }!!.y
@@ -53,7 +51,7 @@ class Day13 : Day {
         var ret = "\n"
         (minY..maxY).forEach { y ->
             (minX..maxX).forEach { x ->
-                ret += if(Cord2D(x,y) in inMap) "#" else " "
+                ret += if (Cord2D(x, y) in inMap) "#" else " "
             }
             ret += "\n"
         }
@@ -67,12 +65,7 @@ class Day13 : Day {
 
         printMap(code)
             .solution(2)
-
-
-
     }
-
-
 }
 
 fun main() = solve<Day13>()

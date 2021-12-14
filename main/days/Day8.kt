@@ -1,9 +1,7 @@
 package me.reckter.aoc.days
 
 import me.reckter.aoc.Day
-import me.reckter.aoc.allCombinations
 import me.reckter.aoc.permutations
-import me.reckter.aoc.print
 import me.reckter.aoc.solution
 import me.reckter.aoc.solve
 
@@ -64,7 +62,7 @@ class Day8 : Day {
 
                         digits
                             .entries
-                            .find { (key,it) -> it.size == onSegments.size && it.all { it in onSegments } }
+                            .find { (key, it) -> it.size == onSegments.size && it.all { it in onSegments } }
                             ?.let { it.key } ?: error("no digit found!")
                     }
                     .reduce { acc, it ->
@@ -73,7 +71,6 @@ class Day8 : Day {
             }
             .sum()
             .solution(2)
-
 
 //        loadInput(2)
 //            .map {

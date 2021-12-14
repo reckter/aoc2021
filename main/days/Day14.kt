@@ -23,20 +23,22 @@ class Day14 : Day {
     }
 
     fun onePolyStep(poly: List<Char>): List<Char> {
-        return (poly.windowed(2)
-            .flatMap { (current, next) ->
-                val rule = rules
-                    .find { (rule, replace) ->
-                        rule.first == current && rule.second == next
-                    }
+        return (
+            poly.windowed(2)
+                .flatMap { (current, next) ->
+                    val rule = rules
+                        .find { (rule, replace) ->
+                            rule.first == current && rule.second == next
+                        }
 
-                if (rule == null) {
-                    listOf(current)
-                } else {
-                    listOf(current, rule.second)
-                }
-            }
-                + poly.last())
+                    if (rule == null) {
+                        listOf(current)
+                    } else {
+                        listOf(current, rule.second)
+                    }
+                } +
+                poly.last()
+            )
     }
 
     override fun solvePart1() {
@@ -57,7 +59,7 @@ class Day14 : Day {
 
     fun getValueOfString(input: List<Char>, level: Int = 40): Map<Char, Long> {
 
-        if((input to level) in cache) {
+        if ((input to level) in cache) {
             return cache[input to level]!!
         }
 
@@ -75,10 +77,9 @@ class Day14 : Day {
                     .map {
                         val nextLevel = level - 1
                         val value = getValueOfString(it, nextLevel)
-                        cache[it to  nextLevel] = value
+                        cache[it to nextLevel] = value
 
                         value
-
                     }
                     .reduce { acc, cur -> acc.plus(cur) }
                     .plus(mapOf(next[1] to -1))

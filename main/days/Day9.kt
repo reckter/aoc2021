@@ -4,7 +4,6 @@ import me.reckter.aoc.Day
 import me.reckter.aoc.cords.d2.Cord2D
 import me.reckter.aoc.cords.d2.getNeighbors
 import me.reckter.aoc.solution
-import me.reckter.aoc.solve
 import me.reckter.aoc.time
 
 class Day9 : Day {
@@ -36,39 +35,38 @@ class Day9 : Day {
 
     override fun solvePart2() {
         val basins = map
-                .filter { (cord, height) ->
-                    cord.getNeighbors(true)
-                        .mapNotNull { map[it] }
-                        .all { height < it }
-                }
-                .map { mutableSetOf(it.key) }
+            .filter { (cord, height) ->
+                cord.getNeighbors(true)
+                    .mapNotNull { map[it] }
+                    .all { height < it }
+            }
+            .map { mutableSetOf(it.key) }
         map
             .filter { it.value != 9 }
             .forEach { (cord, height) ->
 
-            val seen = mutableListOf<Cord2D<Int>>(cord)
-            var currentCord = cord
+                val seen = mutableListOf<Cord2D<Int>>(cord)
+                var currentCord = cord
 
-            while(true) {
-                val foundBasin = basins
-                    .find { currentCord in it }
+                while (true) {
+                    val foundBasin = basins
+                        .find { currentCord in it }
 
-                if(foundBasin != null) {
-                    foundBasin.addAll(seen)
-                    return@forEach
+                    if (foundBasin != null) {
+                        foundBasin.addAll(seen)
+                        return@forEach
+                    }
+                    currentCord = currentCord.getNeighbors(true)
+                        .minByOrNull { map[it] ?: 100000 }
+                        ?: error("flows no where!")
+                    seen.add(currentCord)
                 }
-                currentCord = currentCord.getNeighbors(true)
-                    .minByOrNull { map[it] ?: 100000  }
-                    ?: error("flows no where!")
-                seen.add(currentCord)
-
             }
-        }
         basins
             .map { it.size }
             .sortedDescending()
             .take(3)
-            .reduce { acc, it -> acc * it}
+            .reduce { acc, it -> acc * it }
             .solution(2)
     }
 }

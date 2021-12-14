@@ -70,7 +70,6 @@ class Day11 : Day {
         (0 until 100).fold(map to 0) { (map, count), _ ->
             val (next, flashes) = map.step()
 
-
             next to (flashes + count)
         }
             .second

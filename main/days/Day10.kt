@@ -49,10 +49,11 @@ class Day10 : Day {
                     }
             }
         (
-                ((illegals[')'] ?: 0) * 3) +
-                        ((illegals[']'] ?: 0) * 57) +
-                        ((illegals['}'] ?: 0) * 1197) +
-                        ((illegals['>'] ?: 0) * 25137))
+            ((illegals[')'] ?: 0) * 3) +
+                ((illegals[']'] ?: 0) * 57) +
+                ((illegals['}'] ?: 0) * 1197) +
+                ((illegals['>'] ?: 0) * 25137)
+            )
             .solution(1)
     }
 
@@ -68,41 +69,42 @@ class Day10 : Day {
     }
 
     override fun solvePart2() {
-            loadInput()
-                .mapNotNull {
-                    it.toCharArray()
-                        .fold(listOf<Chunk>()) { stack, cur ->
-                            val last = stack.lastOrNull()
-                            if (cur in listOf('(', '{', '[', '<')) {
-                                val next = Chunk(cur)
-                                last?.children?.add(next)
-                                stack + next
-                            } else {
-                                last!!.closingBracket = cur
-                                if (!last.isValidItself()) {
-                                    return@mapNotNull null
-                                }
-
-                                stack.dropLast(1)
+        loadInput()
+            .mapNotNull {
+                it.toCharArray()
+                    .fold(listOf<Chunk>()) { stack, cur ->
+                        val last = stack.lastOrNull()
+                        if (cur in listOf('(', '{', '[', '<')) {
+                            val next = Chunk(cur)
+                            last?.children?.add(next)
+                            stack + next
+                        } else {
+                            last!!.closingBracket = cur
+                            if (!last.isValidItself()) {
+                                return@mapNotNull null
                             }
+
+                            stack.dropLast(1)
                         }
-                }
-                .mapNotNull { it.first() }
-                .map { it.getCompletionString() }
-                .map { it.fold(0L) { acc, cur ->
-                    acc * 5L + when(cur) {
+                    }
+            }
+            .mapNotNull { it.first() }
+            .map { it.getCompletionString() }
+            .map {
+                it.fold(0L) { acc, cur ->
+                    acc * 5L + when (cur) {
                         ')' -> 1L
                         ']' -> 2L
                         '}' -> 3L
                         '>' -> 4L
                         else -> error("wrong closing bracket $cur")
-                } }}
-                .sorted()
-                .print("all scores")
-                .let { it[it.size / 2] }
-                .solution(2)
-
-
+                    }
+                }
+            }
+            .sorted()
+            .print("all scores")
+            .let { it[it.size / 2] }
+            .solution(2)
     }
 }
 
