@@ -53,12 +53,13 @@ class Day13 : Day {
         var ret = "\n"
         (minY..maxY).forEach { y ->
             (minX..maxX).forEach { x ->
-                ret += if(Cord2D(x,y) in inMap) "X" else " "
+                ret += if(Cord2D(x,y) in inMap) "#" else " "
             }
             ret += "\n"
         }
         return ret
     }
+
     override fun solvePart2() {
         val code = instructions.fold(initialPoints) { map, fold ->
             map.oneFold(fold)
