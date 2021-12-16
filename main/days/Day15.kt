@@ -4,12 +4,9 @@ import me.reckter.aoc.Day
 import me.reckter.aoc.cords.d2.Cord2D
 import me.reckter.aoc.cords.d2.getNeighbors
 import me.reckter.aoc.cords.d2.plus
-import me.reckter.aoc.print
+import me.reckter.aoc.dijkstraInt
 import me.reckter.aoc.solution
 import me.reckter.aoc.solve
-import java.lang.Integer.min
-import java.util.PriorityQueue
-import kotlin.math.max
 
 class Day15 : Day {
     override val day = 15
@@ -20,33 +17,16 @@ class Day15 : Day {
     )
 
     fun findShortestPath(map: Map<Cord2D<Int>, Int>, start: Cord2D<Int>, end: Cord2D<Int>): Path {
-        val queue = PriorityQueue<Path>(Comparator.comparing {
-            it.score
-        })
-
-        val seen = mutableSetOf(start)
-        queue.add(Path(listOf(start), 0))
-
-        while (queue.isNotEmpty()) {
-            val next = queue.remove()
-
-            if (next.points.last() == end) {
-                return next
-            }
-            next.points.last().getNeighbors(true)
-                .filter { it in map }
-                .filter { it !in seen }
-                .forEach {
-                    seen.add(it)
-                    queue.add(
-                        Path(
-                            next.points + it,
-                            next.score + map[it]!!
-                        )
-                    )
-                }
-        }
-        error("no path  found!")
+        val (path, value) = dijkstraInt(
+            start = start,
+            end = end,
+            getNeighbors = {
+                it.getNeighbors(true)
+                    .filter { it in map }
+            },
+            getWeightBetweenNodes = { _, it -> map[it]!! }
+        )
+        return Path(path, value)
     }
 
     override fun solvePart1() {
@@ -105,9 +85,11 @@ class Day15 : Day {
             .flatMap { y ->
                 (0..4).map { x ->
                     shiftMap(map, x, y)
+                        .toList()
                 }
             }
             .reduce { acc, cur -> acc.plus(cur) }
+            .toMap()
 
         val end = run {
             Cord2D(

@@ -3,10 +3,12 @@ package me.reckter.aoc
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.trySendBlocking
 import java.io.File
+import java.math.BigDecimal
 import java.math.BigInteger
 import java.math.RoundingMode
 import java.nio.file.Files
 import java.util.LinkedList
+import java.util.PriorityQueue
 import kotlin.math.abs
 import kotlin.math.sqrt
 import kotlin.reflect.full.createInstance
@@ -232,18 +234,88 @@ fun <E> List<E>.permutations(): Sequence<List<E>> {
     return insertInto
         .flatMap { list ->
             (
-                list.indices +
-                    list.size
-                )
+                    list.indices +
+                            list.size
+                    )
                 .asSequence()
                 .map { list.take(it) + this.first() + list.drop(it) }
         }
 }
 
+fun <Node> dijkstraBigDecimal(
+    start: Node,
+    end: Node,
+    getNeighbors: (from: Node) -> List<Node>,
+    getWeightBetweenNodes: (from: Node, to: Node) -> BigDecimal
+): Pair<List<Node>, BigDecimal> {
+    return dijkstra(start, end, 0.toBigDecimal(), BigDecimal::plus, getNeighbors, getWeightBetweenNodes)
+}
+
+fun <Node> dijkstraDouble(
+    start: Node,
+    end: Node,
+    getNeighbors: (from: Node) -> List<Node>,
+    getWeightBetweenNodes: (from: Node, to: Node) -> Double
+): Pair<List<Node>, Double> {
+    return dijkstra(start, end, 0.0, Double::plus, getNeighbors, getWeightBetweenNodes)
+}
+
+fun <Node> dijkstraInt(
+    start: Node,
+    end: Node,
+    getNeighbors: (from: Node) -> List<Node>,
+    getWeightBetweenNodes: (from: Node, to: Node) -> Int
+): Pair<List<Node>, Int> {
+    return dijkstra(start, end, 0, Int::plus, getNeighbors, getWeightBetweenNodes)
+}
+
+fun <Node> dijkstraLong(
+    start: Node,
+    end: Node,
+    getNeighbors: (from: Node) -> List<Node>,
+    getWeightBetweenNodes: (from: Node, to: Node) -> Long
+): Pair<List<Node>, Long> {
+    return dijkstra(start, end, 0L, Long::plus, getNeighbors, getWeightBetweenNodes)
+}
+
+fun <Node, Weight> dijkstra(
+    start: Node,
+    end: Node,
+    zero: Weight,
+    add: (a: Weight, b: Weight) -> Weight,
+    getNeighbors: (from: Node) -> List<Node>,
+    getWeightBetweenNodes: (from: Node, to: Node) -> Weight
+): Pair<List<Node>, Weight> where Weight : Number, Weight : Comparable<Weight> {
+    val queue = PriorityQueue<Pair<List<Node>, Weight>>(Comparator.comparing { it.second })
+
+    val seen = mutableSetOf(start)
+    queue.add(listOf(start) to zero)
+
+    while (queue.isNotEmpty()) {
+        val next = queue.remove()
+
+        if (next.first.last() == end) {
+            return next
+        }
+        getNeighbors(next.first.last())
+            .filter { it !in seen }
+            .forEach {
+                seen.add(it)
+                queue.add(
+                    (next.first + it) to (add(
+                        next.second,
+                        getWeightBetweenNodes(next.first.last(), it)
+                    ))
+                )
+            }
+    }
+    error("no path  found!")
+}
+
 fun hammingDistance(a: String, b: String) =
     a.zip(b)
         .count { (a, b) -> a != b } +
-        a.length - b.length
+            a.length - b.length
 
 fun <E> LinkedList<E>.rotateRight(by: Int) {
     when {
@@ -304,15 +376,6 @@ fun <E> E.repeatToSequence(times: Long): Sequence<E> {
     return (0 until times)
         .asSequence()
         .map { this }
-}
-
-fun Pair<Int, Int>.neightbours(): List<Pair<Int, Int>> {
-    return listOf(
-        this.copy(first = this.first - 1),
-        this.copy(second = this.second - 1),
-        this.copy(first = this.first + 1),
-        this.copy(second = this.second + 1)
-    )
 }
 
 fun Iterable<String>.splitAtEmptyLine(): Iterable<Iterable<String>> {
