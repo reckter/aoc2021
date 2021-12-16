@@ -1,7 +1,6 @@
 package me.reckter.aoc.days
 
 import me.reckter.aoc.Day
-import me.reckter.aoc.print
 import me.reckter.aoc.solution
 import me.reckter.aoc.solve
 
@@ -18,7 +17,7 @@ class Day16 : Day {
     fun List<Char>.toInt(): Int =
         this.joinToString("") { it.toString() }.toInt(2)
 
-    fun parseLiteral(bits: List<Char>, prefix: Long = 0): Pair<Long, List<Char>> {
+    private fun parseLiteral(bits: List<Char>, prefix: Long = 0): Pair<Long, List<Char>> {
         val number = bits.drop(1).take(4).toInt().toLong()
         val value = prefix * 16L + number
         if (bits.first() == '0') {
@@ -28,7 +27,7 @@ class Day16 : Day {
         return parseLiteral(bits.drop(5), value)
     }
 
-    fun parsePacket(bits: List<Char>): Pair<Packet, List<Char>> {
+    private fun parsePacket(bits: List<Char>): Pair<Packet, List<Char>> {
         val version = bits.take(3).toInt()
         val type = bits.drop(3).take(3).toInt()
 
@@ -87,26 +86,26 @@ class Day16 : Day {
         }
     }
 
-    fun Packet.versionSum(): Int {
+    private fun Packet.versionSum(): Int {
         return this.version + this.subPackets.sumOf { it.versionSum() }
     }
 
-    fun Packet.value(): Long {
+    private fun Packet.value(): Long {
         val subPacketValues = subPackets.map { it.value() }
-        return when(this.type) {
+        return when (this.type) {
             0 -> subPacketValues.sum()
             1 -> subPacketValues.reduce { acc, i -> acc * i }
             2 -> subPacketValues.minOrNull()!!
             3 -> subPacketValues.maxOrNull()!!
             4 -> this.literalValue!!
-            5 -> if(subPacketValues[0] > subPacketValues[1]) 1 else 0
-            6 -> if(subPacketValues[0] < subPacketValues[1]) 1 else 0
-            7 -> if(subPacketValues[0] == subPacketValues[1]) 1 else 0
+            5 -> if (subPacketValues[0] > subPacketValues[1]) 1 else 0
+            6 -> if (subPacketValues[0] < subPacketValues[1]) 1 else 0
+            7 -> if (subPacketValues[0] == subPacketValues[1]) 1 else 0
             else -> error("invalid type ${this.type}")
         }
     }
 
-    val packet by lazy {
+    private val packet by lazy {
         val bits = loadInput()
             .first()
             .split("")

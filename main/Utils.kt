@@ -234,9 +234,9 @@ fun <E> List<E>.permutations(): Sequence<List<E>> {
     return insertInto
         .flatMap { list ->
             (
-                    list.indices +
-                            list.size
-                    )
+                list.indices +
+                    list.size
+                )
                 .asSequence()
                 .map { list.take(it) + this.first() + list.drop(it) }
         }
@@ -302,10 +302,12 @@ fun <Node, Weight> dijkstra(
             .forEach {
                 seen.add(it)
                 queue.add(
-                    (next.first + it) to (add(
-                        next.second,
-                        getWeightBetweenNodes(next.first.last(), it)
-                    ))
+                    (next.first + it) to (
+                        add(
+                            next.second,
+                            getWeightBetweenNodes(next.first.last(), it)
+                        )
+                        )
                 )
             }
     }
@@ -315,7 +317,7 @@ fun <Node, Weight> dijkstra(
 fun hammingDistance(a: String, b: String) =
     a.zip(b)
         .count { (a, b) -> a != b } +
-            a.length - b.length
+        a.length - b.length
 
 fun <E> LinkedList<E>.rotateRight(by: Int) {
     when {
