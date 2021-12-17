@@ -121,7 +121,7 @@ class Day16 : Day {
     }
 
     override fun solvePart2() {
-        packet.value().solution(1)
+        packet.value().solution(2)
     }
 }
 

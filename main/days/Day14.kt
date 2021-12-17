@@ -96,7 +96,7 @@ class Day14 : Day {
             .entries
             .sortedBy { it.value }
             .let { it.last().value - it.first().value }
-            .solution(1)
+            .solution(2)
     }
 }
 
