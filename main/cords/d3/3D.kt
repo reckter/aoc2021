@@ -1,5 +1,7 @@
 package me.reckter.aoc.cords.d3
 
+import java.lang.Math.abs
+
 /**
  *           3D
  */
@@ -27,4 +29,8 @@ fun Cord3D<Int>.getNeighbors(): List<Cord3D<Int>> {
         }
     }
         .filter { it != this }
+}
+
+fun Cord3D<Int>.manhattenDistance(to: Cord3D<Int>): Int {
+    return abs(this.x - to.x) + abs(this.y - to.y) + abs(this.z - to.z)
 }
