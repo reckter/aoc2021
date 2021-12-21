@@ -11,7 +11,7 @@ import kotlin.math.pow
 class Day20 : Day {
     override val day = 20
 
-    val rule by lazy {
+    private val rule by lazy {
         loadInput()
             .first()
             .mapIndexed { index, c -> index to (c == '#') }

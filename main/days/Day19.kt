@@ -20,13 +20,13 @@ class Day19 : Day {
 
     operator fun Cord.minus(other: Cord): Cord = Cord(x - other.x, y - other.y, z - other.z)
 
-    val headings: List<(Cord) -> Cord> = listOf(
+    private val headings: List<(Cord) -> Cord> = listOf(
         { it },
         { it.rotate() },
         { it.rotate().rotate() },
     )
 
-    val rotations: List<(Cord) -> Cord> = listOf(
+    private val rotations: List<(Cord) -> Cord> = listOf(
         { it },
         { Cord(it.x, it.z, -it.y) },
         { Cord(it.x, -it.y, -it.z) },
@@ -38,7 +38,7 @@ class Day19 : Day {
         { Cord(-it.x, it.z, it.y) },
     )
 
-    val allDirections =
+    private val allDirections =
         headings
             .flatMap { heading ->
                 rotations.map { rot ->
@@ -55,20 +55,20 @@ class Day19 : Day {
         var foundMatrix: List<Map<Cord, Cord>>? = null
     )
 
-    fun buildMatrix(cords: List<Cord>): List<Map<Cord, Cord>> {
+    private fun buildMatrix(cords: List<Cord>): List<Map<Cord, Cord>> {
         return cords
             .map { base ->
                 cords.associateBy { base - it }
             }
     }
 
-    fun matches(a: Map<Cord, Cord>, b: Map<Cord, Cord>): Boolean {
+    private fun matches(a: Map<Cord, Cord>, b: Map<Cord, Cord>): Boolean {
         return a.keys.count { it in b } >= 12
     }
 
-    val zero = Cord(0, 0, 0)
+    private val zero = Cord(0, 0, 0)
 
-    fun matches(a: List<Map<Cord,Cord>>, b: List<Map<Cord,Cord>>): Pair<Cord, Cord>? {
+    private fun matches(a: List<Map<Cord,Cord>>, b: List<Map<Cord,Cord>>): Pair<Cord, Cord>? {
         a
             .forEach { a ->
                 val match = b
@@ -85,7 +85,7 @@ class Day19 : Day {
         val direction: (Cord) -> Cord
     )
 
-    fun findMatch(truth: List<Map<Cord, Cord>>, needle: Scanner): Match? {
+    private fun findMatch(truth: List<Map<Cord, Cord>>, needle: Scanner): Match? {
         val match = needle.rotatedBeacons
             .map {
                 it to matches(truth, it.second)
@@ -98,7 +98,7 @@ class Day19 : Day {
         return Match(matchedBeacon, dir)
     }
 
-    val scanner by lazy {
+    private val scanner by lazy {
         val scanner = loadInput( trim = false)
             .splitAt { it.isEmpty() }
             .map {
