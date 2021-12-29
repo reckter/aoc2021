@@ -29,6 +29,7 @@ sourceSets {
 
 dependencies {
     implementation(kotlin("stdlib"))
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.0")
     implementation("org.reflections:reflections:0.10.2")
     implementation("com.squareup.okhttp3:okhttp:4.9.2")
     implementation("org.jetbrains.kotlin:kotlin-reflect:1.6.0")
@@ -44,6 +45,8 @@ version = "1.0-SNAPSHOT"
 description = "aoc2021"
 
 tasks.test {
+    minHeapSize = "1024m" // initial heap size
+    maxHeapSize = "4096m" // maximum heap size
     val etags = System.getProperty("excludeTags") ?: "no-tag-given"
     useJUnitPlatform {
         excludeTags = etags.split(",").toMutableSet()

@@ -10,6 +10,7 @@ import java.nio.file.Files
 import java.util.LinkedList
 import java.util.PriorityQueue
 import kotlin.math.abs
+import kotlin.math.pow
 import kotlin.math.sqrt
 import kotlin.reflect.full.createInstance
 import kotlin.system.measureNanoTime
@@ -339,6 +340,13 @@ val uppercaseAlphabet = alphabet.map(Char::uppercaseChar)
 val uppercaseAlphabetString = uppercaseAlphabet.joinToString("")
 
 fun Int.digits() = this.toString().map { it.toString().toInt() }
+fun Long.digits() = this.toString().map { it.toString().toInt() }
+
+fun List<Int>.toLong(): Long {
+    return this.reversed()
+        .mapIndexed{ index, it -> it * 10.0.pow(index).toLong()}
+        .sum()
+}
 
 fun <E> List<E>.replace(index: Int, item: E): List<E> =
     this.take(index) + item + this.drop(index + 1)
@@ -384,6 +392,16 @@ fun Iterable<String>.splitAtEmptyLine(): Iterable<Iterable<String>> {
     return this.splitAt { it == "" }
 }
 
+fun <T> Iterable<T>.splitBeforeEach(predicate: (T) -> Boolean): Iterable<Iterable<T>> {
+    return this.fold(mutableListOf(mutableListOf<T>())) { lists, element ->
+        if (predicate(element)) {
+            lists.add(mutableListOf(element))
+        } else {
+            lists.last().add(element)
+        }
+        lists
+    }
+}
 fun <T> Iterable<T>.splitAt(predicate: (T) -> Boolean): Iterable<Iterable<T>> {
     return this.fold(mutableListOf(mutableListOf<T>())) { lists, element ->
         if (predicate(element)) {
